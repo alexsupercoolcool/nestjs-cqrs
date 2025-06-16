@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, Type} from '@nestjs/common';
 
 import { Command } from './command';
 import { CommandHandler } from './command-handler';
@@ -6,7 +6,7 @@ import { CommandHandler } from './command-handler';
 @Injectable()
 export class CommandRegistry {
   private readonly handlers = new Map<
-    new (...args: any[]) => Command<any, any>,
+    Type<Command<any>>,
     CommandHandler<Command<any, any>>
   >();
 
@@ -22,7 +22,7 @@ export class CommandRegistry {
   }
 
   public getHandler<TCommand extends Command<any, any>>(
-    commandClass: new (...args: any[]) => TCommand,
+    commandClass: Type<Command<any>>,
   ): CommandHandler<TCommand> | undefined {
     return this.handlers.get(commandClass) as
       | CommandHandler<TCommand>
